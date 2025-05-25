@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -191,6 +192,49 @@ public class Main {
           }
           break;
         case 2:
+          System.out.println("\n--- Histórico de Conversões ---");
+          File arquivoHistorico = new File("conversion_history.json");
+
+          if (!arquivoHistorico.exists() || arquivoHistorico.length() == 0) {
+            System.out.println("Nenhuma conversão registrada no histórico ainda.");
+            break;
+          }
+
+          List<ConversionHistoryEntry> historicoSalvo = new ArrayList<>();
+          try (FileReader reader = new FileReader(arquivoHistorico)) {
+            Type tipoLista = new TypeToken<ArrayList<ConversionHistoryEntry>>() {
+            }.getType();
+            historicoSalvo = gson.fromJson(reader, tipoLista);
+
+            if (historicoSalvo == null || historicoSalvo.isEmpty()) {
+              System.out.println("O histórico está vazio ou não pôde ser lido corretamente.");
+            } else {
+              DateTimeFormatter displayFormatter = DateTimeFormatter
+                  .ofPattern("dd/MM/yyyy HH:mm:ss");
+
+              for (int i = 0; i < historicoSalvo.size(); i++) {
+                ConversionHistoryEntry entrada = historicoSalvo.get(i);
+                System.out.printf("%d. Em %s: %.2f %s -> %.3f %s (Taxa: %.4f)%n",
+                    (i + 1),
+                    entrada.getDataHora().format(displayFormatter),
+                    entrada.getValorOriginal(),
+                    entrada.getMoedaOrigem(),
+                    entrada.getValorConvertido(),
+                    entrada.getMoedaDestino(),
+                    entrada.getTaxaConversao());
+              }
+            }
+          } catch (IOException e) {
+            Menu.showError("Erro ao ler o arquivo de histórico: " + e.getMessage());
+          } catch (JsonSyntaxException e) {
+            Menu.showError(
+                "Erro de formato no arquivo de histórico. O arquivo pode estar corrompido: " + e.getMessage());
+          }
+          System.out.println("--- Fim do Histórico ---\n");
+          System.out.println("Pressione Enter para continuar...");
+          scan.nextLine();
+          break;
+        case 3:
           menu.exit();
           scan.close();
           return;

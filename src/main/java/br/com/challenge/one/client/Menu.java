@@ -24,7 +24,8 @@ public class Menu {
     System.out.println("Bem-vindo ao Conversor de Moedas!");
     System.out.println("Escolha uma opção:");
     System.out.println("1. Converter moeda");
-    System.out.println("2. Sair");
+    System.out.println("2. Ver histórico de conversões");
+    System.out.println("3. Sair");
     System.out.println("===================================");
   }
 
