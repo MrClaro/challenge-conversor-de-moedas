@@ -21,7 +21,7 @@ public class ApiClient {
         .build();
   }
 
-  public String get(String base, String target, double amount) throws ApiException {
+  public String get(String base, String target, Double amount) throws ApiException {
     try {
       Dotenv dotenv = Dotenv.load();
       String token = dotenv.get("API_TOKEN");
@@ -42,9 +42,8 @@ public class ApiClient {
     }
   }
 
-  private String buildUrl(String token, String base, String target, double amount) {
-    System.out.println(baseUrl + token + "/latest/" + base + "/" + target + "/" + amount);
-    return baseUrl + token + "/latest/" + base + "/" + target + "/" + amount;
+  private String buildUrl(String token, String base, String target, Double amount) {
+    return baseUrl + token + "/pair/" + base + "/" + target + "/" + amount;
 
   }
 
